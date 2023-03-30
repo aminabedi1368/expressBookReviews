@@ -21,10 +21,12 @@ public_users.post("/register", (req, res) => {
 
 // Get the book list available in the shop
 public_users.get('/', async function (req, res) {
-  //Write your code here
-  const booksJson = await books;
-  return res.status(200).json(booksJson);
 
+const booksJson = await books;
+  return new Promise((resolve, reject) => {
+    resolve(res.status(200).json(booksJson));
+  });
+ 
 });
 
 // Get book details based on ISBN
@@ -33,7 +35,9 @@ public_users.get("/isbn/:isbn", async function (req, res) {
     const ISBN = req.params.isbn;
     const book = await books[ISBN];
     if (book) {
-        res.status(200).json(book);
+        return new Promise((resolve, reject) => {
+            resolve(res.status(200).json(book));
+          });
       } else {
         res.status(404).json({ error: "Book not found" });
       }
@@ -58,9 +62,9 @@ public_users.get('/author/:author', async function (req, res) {
 // Get all books based on title
 public_users.get("/title/:title", async function (req, res) {
     const title = req.params.title;
-    const bookArr = await Object.values(books);
+    const bookArray = await Object.values(books);
   
-    const book = bookArr.filter((book) => book.title === title);
+    const book = bookArray.filter((book) => book.title === title);
     if (book.length>0) {
       res.status(200).json(book);
     } else {
